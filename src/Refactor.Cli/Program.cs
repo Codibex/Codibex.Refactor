@@ -10,9 +10,10 @@ internal class Program
     {
         args = new[]
         {
-            "-sD:\\Dev\\Github\\Codibex.Refactor\\Codibex.Refactor.sln",
-            "-oCodibex.Refactor.Cli",
-            "-nCodibex.Refactor.Cli1"
+            "-sD:\\Dev\\Github\\Codibex.Refactor\\test\\RefactorTest\\RefactorTest.sln",
+            "-rRefactorTest.AnotherProj",
+            "-oRefactorTest",
+            "-nRefactorTest.AnotherProj"
         };
         // Attempt to set the version of MSBuild.
         var visualStudioInstances = MSBuildLocator.QueryVisualStudioInstances().ToArray();

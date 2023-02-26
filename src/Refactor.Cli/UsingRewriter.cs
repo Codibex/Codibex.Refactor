@@ -17,16 +17,20 @@ internal class UsingRewriter : CSharpSyntaxRewriter
 
     public override SyntaxNode VisitUsingDirective(UsingDirectiveSyntax node)
     {
-        if (node.Name is QualifiedNameSyntax qualifiedNameSyntax == false)
+        if (node.Name is QualifiedNameSyntax qualifiedNameSyntax)
         {
-            return node;
+            return _oldUsing == qualifiedNameSyntax.ToFullString()
+                ? node.ReplaceNode(node, _nameSyntax)
+                : node;
         }
 
-        if (_oldUsing != qualifiedNameSyntax.ToFullString())
+        if (node.Name is IdentifierNameSyntax identifierNameSyntax)
         {
-            return node;
+            return _oldUsing == identifierNameSyntax.ToFullString()
+                ? node.ReplaceNode(node.Name, _nameSyntax)
+                : node;
         }
 
-        return node.ReplaceNode(node, _nameSyntax);
+        return node;
     }
 }
