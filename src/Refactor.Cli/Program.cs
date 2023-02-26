@@ -6,14 +6,18 @@ namespace Codibex.Refactor.Cli;
 
 internal class Program
 {
+    private static string[] OverrideArgs =>
+        new[]
+        {
+            "-s..\\..\\..\\..\\..\\test\\RefactorTest\\RefactorTest.sln",
+            "-rRefactorTest.AnotherProj",
+            "-oRefactorTest",
+            "-nRefactorTest.AnotherProj"
+        };
+
     public static async Task Main(string[] args)
     {
-        args = new[]
-        {
-            "-sD:\\Dev\\Github\\Codibex.Refactor\\Codibex.Refactor.sln",
-            "-oCodibex.Refactor.Cli",
-            "-nCodibex.Refactor.Cli1"
-        };
+        //args = OverrideArgs;
         // Attempt to set the version of MSBuild.
         var visualStudioInstances = MSBuildLocator.QueryVisualStudioInstances().ToArray();
         var instance = visualStudioInstances.Length == 1
