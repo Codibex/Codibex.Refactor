@@ -19,7 +19,7 @@ internal class Program
     {
         //comment out this line for test
         //args = OverrideArgs;
-
+        
         // Attempt to set the version of MSBuild.
         var visualStudioInstances = MSBuildLocator.QueryVisualStudioInstances().ToArray();
         var instance = visualStudioInstances.Length == 1
