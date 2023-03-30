@@ -8,12 +8,7 @@ internal class LineEndingFixer : SolutionFixer
     {   
     }
 
-    internal async Task<Solution> FixAsync()
-    {
-        await UpdateProjectsAsync();
-        return UpdatedSolution;
-    }
-    private async Task UpdateProjectsAsync()
+    protected override async Task UpdateProjectsAsync()
     {
 
         var documentAnalyzer = new LineEndingsDocumentUpdater();

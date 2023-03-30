@@ -48,10 +48,11 @@ internal class Program
                 var solution = await workspace.OpenSolutionAsync(solutionPath, new ConsoleProgressReporter());
             
                 Console.WriteLine($"Finished loading solution '{solutionPath}'");
-                var updatedSolution = await new LineEndingFixer(solution).FixAsync();
-                solution.Workspace.TryApplyChanges(updatedSolution);
+                //var updatedSolution = await new LineEndingFixer(solution).FixAsync();
+                
 
-                await new UsingFixer(solution).FixAsync(o.ProjectToReference, o.OldUsing, o.NewUsing);
+                var updatedSolution = await new UsingFixer(solution, o.ProjectToReference, o.OldUsing, o.NewUsing).FixAsync();
+                solution.Workspace.TryApplyChanges(updatedSolution);
             });
     }
 

@@ -12,4 +12,12 @@ internal abstract class SolutionFixer
         OriginalSolution = originalSolution;
         UpdatedSolution = OriginalSolution;
     }
+
+    internal async Task<Solution> FixAsync()
+    {
+        await UpdateProjectsAsync();
+        return UpdatedSolution;
+    }
+
+    protected abstract Task UpdateProjectsAsync();
 }
