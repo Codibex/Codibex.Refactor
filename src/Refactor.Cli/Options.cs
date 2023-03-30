@@ -2,12 +2,6 @@
 
 namespace Codibex.Refactor.Cli;
 
-internal enum CodeFixer
-{
-    Usings,
-    LineEndings
-}
-
 internal class Options
 {
     [Option('s', Required = true, HelpText = "Solution to analyze")]
@@ -19,10 +13,10 @@ internal class Options
     [Option('r', Required = false, HelpText = "Project to reference")]
     public string? ProjectToReference { get; }
 
-    [Option('o', Required = true, HelpText = "Old using to replace")]
+    [Option('o', Required = false, HelpText = "Old using to replace")]
     public string OldUsing { get; }
 
-    [Option('n', Required = true, HelpText = "New using")]
+    [Option('n', Required = false, HelpText = "New using")]
     public string NewUsing { get; }
 
     public Options(string solution, CodeFixer codeFixer, string? projectToReference, string oldUsing, string newUsing)
