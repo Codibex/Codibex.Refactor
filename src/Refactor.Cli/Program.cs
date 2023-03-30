@@ -84,8 +84,9 @@ internal class Program
     {
         SolutionFixer codeFixer = o.CodeFixer switch
         {
-            CodeFixer.Usings => new UsingFixer(solution, o.ProjectToReference, o.OldUsing, o.NewUsing),
+            CodeFixer.Usings => new UsingFixer(solution, o.ProjectToReference, o.OldSymbol, o.NewSymbol),
             CodeFixer.LineEndings => new LineEndingFixer(solution),
+            CodeFixer.IdentifierName => new IdentifierNameFixer(solution, o.OldSymbol, o.NewSymbol),
             _ => throw new ArgumentOutOfRangeException()
         };
 

@@ -13,18 +13,18 @@ internal class Options
     [Option('r', Required = false, HelpText = "Project to reference")]
     public string? ProjectToReference { get; }
 
-    [Option('o', Required = false, HelpText = "Old using to replace")]
-    public string OldUsing { get; }
+    [Option('o', Required = false, HelpText = "Old using or name to replace")]
+    public string OldSymbol { get; }
 
-    [Option('n', Required = false, HelpText = "New using")]
-    public string NewUsing { get; }
+    [Option('n', Required = false, HelpText = "New using or name")]
+    public string NewSymbol { get; }
 
-    public Options(string solution, CodeFixer codeFixer, string? projectToReference, string oldUsing, string newUsing)
+    public Options(string solution, CodeFixer codeFixer, string? projectToReference, string oldSymbol, string newSymbol)
     {
         Solution = solution;
         CodeFixer = codeFixer;
         ProjectToReference = projectToReference;
-        OldUsing = oldUsing;
-        NewUsing = newUsing;
+        OldSymbol = oldSymbol;
+        NewSymbol = newSymbol;
     }
 }

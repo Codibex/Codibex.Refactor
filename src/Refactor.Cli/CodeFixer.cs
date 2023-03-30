@@ -3,5 +3,6 @@
 internal enum CodeFixer
 {
     Usings,
-    LineEndings
+    LineEndings,
+    IdentifierName
 }

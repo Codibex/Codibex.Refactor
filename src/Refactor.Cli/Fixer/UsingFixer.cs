@@ -40,6 +40,4 @@ internal class UsingFixer : SolutionFixer
         _assemblyToReference is null
             ? null
             : OriginalSolution.Projects.FirstOrDefault(p => p.AssemblyName == _assemblyToReference);
-
-
 }
