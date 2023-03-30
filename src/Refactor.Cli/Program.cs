@@ -1,5 +1,7 @@
-﻿using CommandLine;
+﻿using Codibex.Refactor.Cli.Fixer;
+using CommandLine;
 using Microsoft.Build.Locator;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.MSBuild;
 
 namespace Codibex.Refactor.Cli;
@@ -10,6 +12,7 @@ internal class Program
         new[]
         {
             "-s..\\..\\..\\..\\..\\test\\RefactorTest\\RefactorTest.sln",
+            "-fUsings",
             "-rRefactorTest.AnotherProj",
             "-oRefactorTest",
             "-nRefactorTest.AnotherProj"
@@ -18,7 +21,7 @@ internal class Program
     public static async Task Main(string[] args)
     {
         //comment out this line for test
-        //args = OverrideArgs;
+        args = OverrideArgs;
         
         // Attempt to set the version of MSBuild.
         var visualStudioInstances = MSBuildLocator.QueryVisualStudioInstances().ToArray();
@@ -46,9 +49,10 @@ internal class Program
 
                 // Attach progress reporter so we print projects as they are loaded.
                 var solution = await workspace.OpenSolutionAsync(solutionPath, new ConsoleProgressReporter());
+            
                 Console.WriteLine($"Finished loading solution '{solutionPath}'");
 
-                await new UsingFixer(solution).FixAsync(o.ProjectToReference, o.OldUsing, o.NewUsing);
+                await FixSolution(o, solution);
             });
     }
 
@@ -74,6 +78,19 @@ internal class Program
             }
             Console.WriteLine("Input not accepted, try again.");
         }
+    }
+
+    private static async Task FixSolution(Options o, Solution solution)
+    {
+        SolutionFixer codeFixer = o.CodeFixer switch
+        {
+            CodeFixer.Usings => new UsingFixer(solution, o.ProjectToReference, o.OldUsing, o.NewUsing),
+            CodeFixer.LineEndings => new LineEndingFixer(solution),
+            _ => throw new ArgumentOutOfRangeException()
+        };
+
+        var updatedSolution = await codeFixer.FixAsync();
+        solution.Workspace.TryApplyChanges(updatedSolution);
     }
 
     private class ConsoleProgressReporter : IProgress<ProjectLoadProgress>
