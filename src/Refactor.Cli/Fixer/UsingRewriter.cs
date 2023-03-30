@@ -2,7 +2,7 @@
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace Codibex.Refactor.Cli;
+namespace Codibex.Refactor.Cli.Fixer;
 internal class UsingRewriter : CSharpSyntaxRewriter
 {
     private readonly string _oldUsing;

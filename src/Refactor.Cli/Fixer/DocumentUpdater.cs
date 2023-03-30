@@ -1,6 +1,6 @@
 ﻿using Microsoft.CodeAnalysis;
 
-namespace Codibex.Refactor.Cli;
+namespace Codibex.Refactor.Cli.Fixer;
 
 internal abstract class DocumentUpdater
 {

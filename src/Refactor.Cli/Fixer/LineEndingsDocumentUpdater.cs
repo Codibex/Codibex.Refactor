@@ -2,7 +2,7 @@
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Formatting;
 
-namespace Codibex.Refactor.Cli;
+namespace Codibex.Refactor.Cli.Fixer;
 
 internal class LineEndingsDocumentUpdater : DocumentUpdater
 {

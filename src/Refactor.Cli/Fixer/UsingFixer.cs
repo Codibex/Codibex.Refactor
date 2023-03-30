@@ -1,6 +1,6 @@
 ﻿using Microsoft.CodeAnalysis;
 
-namespace Codibex.Refactor.Cli;
+namespace Codibex.Refactor.Cli.Fixer;
 
 internal class UsingFixer : SolutionFixer
 {
@@ -14,7 +14,7 @@ internal class UsingFixer : SolutionFixer
         _oldUsing = oldUsing;
         _newUsing = newUsing;
     }
-    
+
     protected override async Task UpdateProjectsAsync()
     {
         Project? projectToReference = GetProjectToReference();
@@ -41,5 +41,5 @@ internal class UsingFixer : SolutionFixer
             ? null
             : OriginalSolution.Projects.FirstOrDefault(p => p.AssemblyName == _assemblyToReference);
 
-    
+
 }

@@ -1,11 +1,11 @@
 ﻿using Microsoft.CodeAnalysis;
 
-namespace Codibex.Refactor.Cli;
+namespace Codibex.Refactor.Cli.Fixer;
 
 internal class LineEndingFixer : SolutionFixer
 {
     public LineEndingFixer(Solution originalSolution) : base(originalSolution)
-    {   
+    {
     }
 
     protected override async Task UpdateProjectsAsync()
