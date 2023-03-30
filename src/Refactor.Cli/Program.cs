@@ -18,7 +18,7 @@ internal class Program
     public static async Task Main(string[] args)
     {
         //comment out this line for test
-        //args = OverrideArgs;
+        args = OverrideArgs;
         
         // Attempt to set the version of MSBuild.
         var visualStudioInstances = MSBuildLocator.QueryVisualStudioInstances().ToArray();
@@ -46,7 +46,10 @@ internal class Program
 
                 // Attach progress reporter so we print projects as they are loaded.
                 var solution = await workspace.OpenSolutionAsync(solutionPath, new ConsoleProgressReporter());
+            
                 Console.WriteLine($"Finished loading solution '{solutionPath}'");
+                var updatedSolution = await new LineEndingFixer(solution).FixAsync();
+                solution.Workspace.TryApplyChanges(updatedSolution);
 
                 await new UsingFixer(solution).FixAsync(o.ProjectToReference, o.OldUsing, o.NewUsing);
             });

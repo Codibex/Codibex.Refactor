@@ -1,15 +1,12 @@
 ﻿using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.Formatting;
 
 namespace Codibex.Refactor.Cli;
-internal class UsingFixer
+internal class UsingFixer : SolutionFixer
 {
-    private readonly Solution _originalSolution;
-    private Solution _updatedSolution;
-
-    internal UsingFixer(Solution originalSolution)
-    {
-        _originalSolution = originalSolution;
-        _updatedSolution = _originalSolution;
+    internal UsingFixer(Solution originalSolution) : base(originalSolution)
+    {;
     }
     
     internal async Task FixAsync(string? assemblyToReference, string oldUsing, string newUsing)
@@ -17,16 +14,15 @@ internal class UsingFixer
         Project? projectToReference = GetProjectToReference(assemblyToReference);
         
         await UpdateProjectsAsync(projectToReference, oldUsing, newUsing);
-        _originalSolution.Workspace.TryApplyChanges(_updatedSolution);
+        OriginalSolution.Workspace.TryApplyChanges(UpdatedSolution);
     }
 
     private async Task UpdateProjectsAsync(Project? projectToReference, string oldUsing, string newUsing)
     {
-
         var documentAnalyzer = new DocumentUpdater(oldUsing, newUsing);
-        foreach (ProjectId projectId in _updatedSolution.ProjectIds)
+        foreach (ProjectId projectId in UpdatedSolution.ProjectIds)
         {
-            Project solutionProject = _updatedSolution.GetProject(projectId)!;
+            Project solutionProject = UpdatedSolution.GetProject(projectId)!;
 
             var projectAnalyzer = new ProjectUpdater(solutionProject, documentAnalyzer);
             var updatedProject = await projectAnalyzer.UpdateAsync(projectToReference);
@@ -36,14 +32,14 @@ internal class UsingFixer
                 continue;
             }
 
-            _updatedSolution = updatedProject.Solution;
+            UpdatedSolution = updatedProject.Solution;
         }
     }
 
     private Project? GetProjectToReference(string? assemblyToReference) =>
         assemblyToReference is null
             ? null
-            : _originalSolution.Projects.FirstOrDefault(p => p.AssemblyName == assemblyToReference);
+            : OriginalSolution.Projects.FirstOrDefault(p => p.AssemblyName == assemblyToReference);
 
     private class ProjectUpdater
     {
@@ -91,11 +87,23 @@ internal class UsingFixer
             {
                 var projectDocument = _updatedProject.GetDocument(documentId)!;
                 var updatedDocument = await _documentUpdater.UpdateAsync(projectDocument);
+                
                 if (updatedDocument is null)
                 {
                     continue;
                 }
 
+                if (updatedDocument.SupportsSyntaxTree)
+                {
+                    var root = await updatedDocument.GetSyntaxRootAsync();
+                    var options = await updatedDocument.GetOptionsAsync();
+
+                    root = root!.ReplaceTrivia(root!.DescendantTrivia().Where(t => t.IsKind(SyntaxKind.EndOfLineTrivia)),
+                        (o, r) => SyntaxFactory.ElasticMarker);
+
+                    var update = Formatter.Format(root, updatedDocument.Project.Solution.Workspace, options);
+                    updatedDocument = updatedDocument.WithSyntaxRoot(update);
+                }
                 _updatedProject = updatedDocument.Project;
             }
         }
